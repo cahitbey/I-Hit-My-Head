@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerJumper : MonoBehaviour
 {
     public float force = 10f;
+    public int experience = 0;
 
     public Animator anim;
 
@@ -15,6 +16,11 @@ public class PlayerJumper : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        if (experience > 10)
+        {
+            force = force * 3;
+        }
     }
 
     // Update is called once per frame
@@ -25,13 +31,8 @@ public class PlayerJumper : MonoBehaviour
 
         transform.Translate(horizontal, 0, vertical);
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
-            anim.SetBool("Jumping", true);
-            rb.AddForce(new Vector3(0f, 5f, 0f) * force, ForceMode.Impulse);
-            isGrounded = false;
-            
-        }
+        Jump();
+
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -40,6 +41,18 @@ public class PlayerJumper : MonoBehaviour
         {
             isGrounded = true;
             anim.SetBool("Jumping", false);
+        }
+    }
+
+    private void Jump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            anim.SetBool("Jumping", true);
+            rb.AddForce(new Vector3(0f, 5f, 0f) * force, ForceMode.Impulse);
+            isGrounded = false;
+
+            experience = experience + 2;
         }
     }
 }
